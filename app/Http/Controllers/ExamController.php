@@ -72,10 +72,7 @@ class ExamController extends Controller
                         $examinee->branch = $student["branch"];
                         $examinee->year = $student["year"];
                         $examinee->dob="";
-
                         $examinee->save();
-
-
                     }
                     return 'success';
 

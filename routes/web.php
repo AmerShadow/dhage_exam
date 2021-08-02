@@ -11,12 +11,17 @@
 |
 */
 
+use Illuminate\Routing\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::prefix('admin')->group(function () {
+    Route::get('exam','ExamController@exams')->route('exams');
     Route::get('exam/create','ExamController@createExam')->name('exam.create');
     Route::post('exam/store','ExamController@storeExam')->name('exam.store');
+
+});
 
 
