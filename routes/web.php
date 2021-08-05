@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,17 +14,17 @@
 |
 */
 
-use Illuminate\Routing\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('admin')->group(function () {
-    Route::get('exam','ExamController@exams')->route('exams');
-    Route::get('exam/create','ExamController@createExam')->name('exam.create');
-    Route::post('exam/store','ExamController@storeExam')->name('exam.store');
+Route::get('exam/create','ExamController@createExam')->name('exam.create');
+Route::post('exam/store','ExamController@storeExam')->name('exam.store');
+Route::get('exam','ExamController@index')->name('exam.index');
+Route::get('exam/set/{exam}','ExamController@setPaper')->name('exam.set.paper');
 
-});
+Route::post('exam/add/question/{id}','ExamController@addQuestion')->name('exam.add.question');
+Route::get('exam/delete/question/{id}','ExamController@deleteQuestion')->name('exam.delete.question');
 
 

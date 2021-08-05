@@ -22,6 +22,7 @@ class CreateExamsTable extends Migration
             $table->string('branch');
             $table->string('year');
             $table->string('batch');
+            $table->string('status')->nullable();
             $table->string('duration');
             $table->timestamps();
         });

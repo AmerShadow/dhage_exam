@@ -3,15 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Exam;
+use App\ExamQuestion;
 use App\Student;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Console\Question\Question;
 
 class ExamController extends Controller
 {
+
+    public function index()
+    {
+        $exams=Exam::all();
+       // return $exams;
+        return view('exams.index',compact('exams'));
+    }
+
+
+
 
     function createExam()
     {
@@ -51,7 +63,17 @@ class ExamController extends Controller
         $exam->end_date = $request->end_date;
         $exam->branch = $request->branch;
         $exam->year = $request->year;
-        $exam->batch = $request->branch."".$request->year;
+        $exam->status = 1;
+
+
+
+
+        do {
+            $batch=date('Y').$request->branch.$request->year.rand($min=1000,$max=9999);
+        } while (Exam::where('batch',$batch)->exists());
+
+
+        $exam->batch = $batch;
         if ($exam->save()) {
             $url = env('BASE_URL') . '/students/' . $request->branch . '/' . $request->year;
             $response = Http::get($url);
@@ -65,7 +87,8 @@ class ExamController extends Controller
 
                         $examinee = new Student();
                         $examinee->name = $student["name"];
-                        $examinee->exam_seat_no="IV".date('Y')."".$exam->batch."".str_pad($key+1, 6, '0', STR_PAD_LEFT);
+
+                        $examinee->exam_seat_no="IV".$exam->batch.str_pad($key+1, 6, '0', STR_PAD_LEFT);
                         $examinee->email = $student["email"];
                         $examinee->mobile = $student["phone"];
                         $examinee->password = rand($min= 11111111,$max=99999999);
@@ -74,7 +97,7 @@ class ExamController extends Controller
                         $examinee->dob="";
                         $examinee->save();
                     }
-                    return 'success';
+                    return redirect()->route('exam.index')->with('success','Exam Added seccessfully');
 
                 }
             } else {
@@ -86,6 +109,80 @@ class ExamController extends Controller
         } else {
             return " Unable to create exam";
             return redirect()->back()->with('unsuccess', 'Oops..! Unable to create exam');
+        }
+    }
+
+
+    //set paper
+    public function setPaper(Exam $exam)
+    {
+        $questions=$exam->questions;
+        return view('paper.set',compact('exam','questions'));
+    }
+
+
+    //Add question to In a question paper for exam
+    public function addQuestion(Request $request,$id)
+    {
+        $request->validate([
+            'question'=> 'required',
+            'answer'=> 'required',
+            'option_a'=> 'required',
+            'option_b'=> 'required',
+            'option_c'=> 'required',
+            'option_d'=> 'required',
+        ]);
+
+        try {
+            $exam=Exam::findOrFail($id);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'F',
+                'message' => 'Exam not Found',
+
+            ]);
+        }
+
+        $examQuestion=new ExamQuestion();
+        $examQuestion->exams_id=$id;
+        $examQuestion->question=$request->question;
+        $examQuestion->option_a=$request->option_a;
+        $examQuestion->option_b=$request->option_b;
+        $examQuestion->option_c=$request->option_c;
+        $examQuestion->option_d=$request->option_d;
+        $examQuestion->answer=$request->answer;
+
+
+        if ($examQuestion->save()) {
+            return response()->json([
+                'status' => 'S',
+                'message' => 'Question Added successfully',
+                'data' => $examQuestion,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'F',
+                'message' => 'Unable to add Question',
+            ]);
+        }
+    }
+
+
+    public function deleteQuestion($id)
+    {
+        try {
+            $question=ExamQuestion::findOrFail($id);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('unsuccess','question not found');
+        }
+
+        $deletedQuestionId=$question->id;
+
+        if ($question->delete()) {
+            return redirect()->back()->with('success','question Deleted Successfully');
+
+        } else {
+            return redirect()->back()->with('unsuccess','Unable to delete Question');
         }
     }
 }
