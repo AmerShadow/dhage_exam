@@ -5,7 +5,7 @@
     <div class="row m-0 p-0">
         <div class="col-md-6 ">
         <h4 class="h4 h4-responsive white-text  py-1 head">
-              <img src="{{asset('svg/logo.png')}}" class="img img-fluid" width="130" alt="">  
+              <img src="{{asset('svg/logo.png')}}" class="img img-fluid" width="130" alt="">
               <span class="m-auto">
               Innovative View Publication
               </span>
@@ -17,7 +17,7 @@
 
             </h2>
         </div>
-        
+
     </div>
 </section>
 <section style="background:#fafafa;">
@@ -58,7 +58,7 @@
             <input type="radio" class="custom-control-input" id="opt4" name="groupOfDefaultRadios">
             <label class="custom-control-label" for="opt4">Option 4</label>
             </div>
-            
+
         </div>
         </div>
         <div class="row text-right   ">
@@ -74,14 +74,14 @@
         </div>
     </div>
         </div>
-    
+
         <div class="col-md-4 m-0 p-0">
             <div class="card shadow-none py-5 m-0">
                 <div class="card-body m-0 p-0">
                     <div class="px-4">
                     <h4 class="card-title font-weight-bold">Tauseef Ahmed</h4>
                     <p class="mb-0 text-16">Course / Branch</p>
-                    
+
                     </div>
                     <hr class="mb-0 pb-0">
                     <div class="px-4 py-2">
@@ -98,34 +98,3 @@
                     <hr class="m-0 p-0">
                    <div class="px-3">
                     <ul class="list-inline">
-                        <li class="list-inline-item active"> 
-                            <a class="btn-floating btn-white d-flex align-items-center "><span class="black-text">1</span></a>
-                        </li>
-                        <li class="list-inline-item">                  
-                              <a class="btn-floating btn-danger d-flex align-items-center border-none white-text "><span class="">2</span></a>
-                        </li>
-                        <li class="list-inline-item">                
-                             <a class="btn-floating btn-success d-flex align-items-center border-none white-text "><span class="">3</span></a>
-                        </li>
-                        <li class="list-inline-item">                
-                             <a class="btn-floating btn-white d-flex align-items-center  black-text "><span class="black-text">4</span></a>
-                        </li>
-                        <li class="list-inline-item">                
-                             <a class="btn-floating btn-white d-flex align-items-center  black-text "><span class="black-text">5</span></a>
-                        </li>
-                        <li class="list-inline-item">                
-                             <a class="btn-floating btn-white d-flex align-items-center   "><span class="black-text">6</span></a>
-                        </li>
-                        <li class="list-inline-item">                
-                             <a class="btn-floating btn-success d-flex align-items-center border-none white-text "><span class="">7</span></a>
-                        </li>
-                    </ul>
-                   </div>
-
-                    
-                </div>
-            </div>
-        </div>
-</div>
-</section>
-@endsection

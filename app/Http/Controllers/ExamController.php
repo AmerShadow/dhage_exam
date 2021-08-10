@@ -92,6 +92,7 @@ class ExamController extends Controller
                         $examinee->email = $student["email"];
                         $examinee->mobile = $student["phone"];
                         $examinee->password = rand($min= 11111111,$max=99999999);
+                        $examinee->batch = $exam->id;
                         $examinee->branch = $student["branch"];
                         $examinee->year = $student["year"];
                         $examinee->dob="";
@@ -117,6 +118,27 @@ class ExamController extends Controller
     public function setPaper(Exam $exam)
     {
         $questions=$exam->questions;
+
+
+        $baseUrl = env('BASE_URL');
+        $url = $baseUrl . '/questions';
+        try {
+            $response = Http::get($url);
+        } catch (\Throwable $th) {
+            print("Unable to get branches");
+            return redirect()->route('exam.index')->with('unsuccess', 'Unable to get questions');
+        }
+        $data = $response->json();
+        if ($data['status'] == "S") {
+            $importedQuestions = $data["data"];
+            //return $questions;
+            return view('paper.set', compact('questions','exam','importedQuestions'));
+        } else {
+            return redirect()->route('exam.index')->with('unsuccess', 'Unable to get branches');
+
+            return "no";
+        }
+
         return view('paper.set',compact('exam','questions'));
     }
 

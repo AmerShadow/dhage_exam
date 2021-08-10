@@ -28,3 +28,8 @@ Route::post('exam/add/question/{id}','ExamController@addQuestion')->name('exam.a
 Route::get('exam/delete/question/{id}','ExamController@deleteQuestion')->name('exam.delete.question');
 
 
+Route::get('exam/{examId}','Student\ExamController@startExamView')->name('start.exam.view');
+Route::post('exam/{examId}','Student\ExamController@startExamPost')->name('start.exam');
+
+
+

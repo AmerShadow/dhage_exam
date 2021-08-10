@@ -12,6 +12,7 @@
 </head>
 
 <body>
+
     <table>
         <tr>
             <th>sr No</th>
@@ -53,7 +54,6 @@
                             @break
                         @case(2)
                              <a href="#">Edit Paper</a>
-
                             @break
                         @default
 
