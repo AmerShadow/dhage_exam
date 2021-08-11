@@ -20,6 +20,7 @@
             <div class="col-md-8">
                 <div class="py-5 px-5">
                     <h5 class="font-weight-bold">
+                        {{$errors}}
                         <form action="{{ route('start.exam', $exam->id) }}" method="POST">
                             @csrf
 

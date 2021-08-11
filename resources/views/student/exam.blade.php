@@ -28,7 +28,7 @@
             Q1.
         </h5>
         <h5 class="question">
-        What are the different data types present in javascript?
+        {!!$questionPaper['questions']->first()->question!!}?
             <br>
             जावास्क्रिप्टमध्ये विविध डेटा प्रकार कोणते आहेत?<br>
             जावास्क्रिप्ट में मौजूद विभिन्न डेटा प्रकार क्या हैं?
@@ -39,24 +39,25 @@
        <!-- Group of default radios - option 1 -->
        <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="opt1" name="groupOfDefaultRadios">
-            <label class="custom-control-label" for="opt1">Option 1 <span>option Marathi</span></label>
+            <label class="custom-control-label" for="opt1">{!!$questionPaper['questions']->first()->option_a !!} <span>option Marathi</span></label>
             </div>
 
             <!-- Group of default radios - option 2 -->
             <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="opt2" name="groupOfDefaultRadios" >
-            <label class="custom-control-label" for="opt2">Option 2</label>
+            <label class="custom-control-label" for="opt1">{!!$questionPaper['questions']->first()->option_b !!}<span>option Marathi</ span></label>
+
             </div>
 
             <!-- Group of default radios - option 3 -->
             <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="opt3" name="groupOfDefaultRadios">
-            <label class="custom-control-label" for="opt3">Option 3</label>
+            <label class="custom-control-label" for="opt1">{!!$questionPaper['questions']->first()->option_c !!}<span>option Marathi</ span></label>
             </div>
             <!-- Group of default radios - option 3 -->
             <div class="custom-control custom-radio">
             <input type="radio" class="custom-control-input" id="opt4" name="groupOfDefaultRadios">
-            <label class="custom-control-label" for="opt4">Option 4</label>
+            <label class="custom-control-label" for="opt1">{!!$questionPaper['questions']->first()->option_d !!}<span>option Marathi</ span></label>
             </div>
 
         </div>

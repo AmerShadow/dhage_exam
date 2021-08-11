@@ -29,15 +29,13 @@ class CreateStudentExamsTable extends Migration
 
 
             $table->string('exam_seat_no');
-            $table->string('is_started')->nullable();
-            $table->string('is_completed')->nullable();
+            $table->string('is_started')->default(false);
+            $table->string('is_completed')->default(false);
             $table->string('result')->nullable();
             $table->string('marks')->nullable();
             $table->string('start_time')->nullable();
             $table->string('duration')->nullable();
             $table->string('time_remaining')->nullable();
-
-
             $table->timestamps();
         });
     }
