@@ -19,6 +19,7 @@
   <link rel="stylesheet" href=" {{url('css/mdb.min.css')}}">
   <!-- Your custom styles (optional) -->
   <link rel="stylesheet" href="{{url('css/style.css')}}">
+
 </head>
 <body>
 
