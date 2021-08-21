@@ -15,6 +15,27 @@
     <link rel="stylesheet" href="{{url('assets/css/style.css')}}" />
     <link rel="shortcut icon" href="{{url('assets/images/favicon.png')}}" />
   </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Material Design for Bootstrap</title>
+  <!-- MDB icon -->
+  <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Google Fonts Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&family=Roboto:wght@300&display=swap" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="  {{url('css/bootstrap.min.css')}}">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href=" {{url('css/mdb.min.css')}}">
+  <!-- Your custom styles (optional) -->
+  <link rel="stylesheet" href="{{url('css/style.css')}}">
+
+</head>
 <body>
   <div class="container-scroller">
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
