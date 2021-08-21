@@ -1,156 +1,94 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
-    <style>
-        html,
-        body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 200;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .full-height {
-            height: 100vh;
-        }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .position-ref {
-            position: relative;
-        }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
-        }
-
-        .content {
-            text-align: center;
-        }
-
-        .title {
-            font-size: 84px;
-        }
-
-        .links>a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-
-    </style>
-</head>
-
-<body>
-    <div class="flex-center position-ref full-height">
+@extends('layouts.layout')
+@section('content')
+<div class="page-header">
+    <h3 class="page-title">Form elements</h3>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Forms</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Form elements </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="card mb-5">
+    <div class="card-body">
+        <h4 class="card-title">Default form</h4>
+        <p class="card-description">Basic form layout</p>
         @if (Route::has('login'))
-            <div class="top-right links">
-                @auth
-                    <a href="{{ url('/home') }}">Home</a>
-                @else
-                    <a href="{{ route('login') }}">Login</a>
+        <div class="top-right links">
+            @auth
+                <a href="{{ url('/home') }}">Home</a>
+            @else
+                <a href="{{ route('login') }}">Login</a>
 
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}">Register</a>
-                    @endif
-                @endauth
-            </div>
-        @endif
-
-        <div class="content">
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}">Register</a>
+                @endif
+            @endauth
+        </div>
+    @endif
+        <div>
             {{$errors}}
-            <form action="{{ route('exam.store') }}" method="POST">
+            <form class="forms-sample" action="{{ route('exam.store') }}" method="POST">
                 @csrf
 
                 <div class="row">
 
                     <div class="col-md-6">
-                        <label for="name">Name of Exam</label>
-                        <input type="text" name="name" id="name">
+                        <div class="form-group">
+                            <label for="name">Name of Exam</label>
+                            <input type="text" name="name" id="name" class="form-control"  placeholder="" />
+                          </div>
+                       
                     </div>
 
 
                     <div class="col-md-6">
+                        <div class="form-group">
+
                         <label for="duration">Duration In Minutes</label>
-                        <input type="text" name="duration" id="duration">
+                        <input type="text" class="form-control" name="duration" id="duration">
                     </div>
-
-                </div>
-
-
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <label for="branch">Branch</label>
-                        <select name="branch" id="branch" required>
-                            @foreach ($branches as $branch)
-                                <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
-                            @endforeach
-                        </select>
                     </div>
-
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <select class="js-example-basic-single" style="width: 100%;" name="branch" id="branch" required>
+                                <option value="">Select Branch</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                         <label for="Year">Year</label>
-                        <select name="year" id="year" required>
+                        <select name="year" id="year" class="js-example-basic-single" style="width: 100%;" required>
+                            <option value="">Select Branch</option>
                             <option value="1">First Year</option>
                             <option value="2">Second Year</option>
                         </select>
+                        </div>
                     </div>
-
-
-                </div>
-
-
-                <div class="row">
-
                     <div class="col-md-6">
                         <label for="start_date">Start Date</label>
-                        <input type="datetime-local" name="start_date" id="start_date">
+                        <input type="datetime-local" class="form-control" name="start_date" id="start_date">
                     </div>
 
 
                     <div class="col-md-6">
                         <label for="end_date">End Date</label>
-                        <input type="datetime-local" name="end_date" id="end_date">
+                        <input type="datetime-local" class="form-control" name="end_date" id="end_date">
                     </div>
 
                 </div>
+                
+                <input type="submit" value="Create new exam" class="btn btn-primary my-4">
 
-
-
-
-                <input type="submit" value="Create new exam">
-
-
+                
             </form>
         </div>
-    </div>
-</body>
+      </div>
+  </div>
 
-</html>
+@endsection

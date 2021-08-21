@@ -1,147 +1,164 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+  @extends('layouts.layout')
+    @section('content')
+    <div class="page-header">
+        <h3 class="page-title">Set Paper</h3>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">All  Paper</a></li>
+            <li class="breadcrumb-item active" aria-current="page"> Set paper </li>
+          </ol>
+        </nav>
+      </div>
+      <div class="card">
+          <div class="card-body">
+            
+          </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+        <h4 class="card-title">Set Paper</h4>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
-
-
-</head>
-
-<body>
-    <div>
+    <div class="row">
+       <div class="col-md-6">
         <p> name: {{ $exam->name }} </p>
         <p> start date : {{ $exam->start_date }}</p>
         <p> end_date : {{ $exam->end_date }}</p>
         <p> duration : {{ $exam->duration }}</p>
         <p> branch : {{ $exam->batch }}</p>
+       </div>
+        <div class="col-md-6">
+            <h2>Questions</h2>
 
-        <h2>Questions</h2>
+            <form name="radio_form">
 
-        <form name="radio_form">
-            <input type="radio" name="question_type" id="new_question_radio" value="new_question_radio" checked>
-            <label for="new_question_radio">Add New Question</label>
-            <input type="radio" name="question_type" id="added_question_radio" value="added_question_radio">
-            <label for="added_question_radio">Add Question From QUestion Bank</label>
-        </form>
+                <div class="form-group">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="question_type" class="form-check-input" id="new_question_radio" value="new_question_radio" checked /> Add New Question </label>
+                      </div>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="question_type" id="added_question_radio" value="added_question_radio" /> Add Question From QUestion Bank </label>
+                      </div>
+                    
+                   
+                    
+                  </div>
 
-
-        <div id="new_question">
-            <form id="add_question_form">
-                @csrf
-                <div>
-                    <label for="question">Question</label>
-                    <input type="text" id="question" name="question">
-                </div>
-
-
-                <div>
-                    <label for="option_a">Option A</label>
-                    <input type="text" id="option_a" name="option_a">
-                </div>
-
-
-                <div>
-                    <label for="option_b">Option B</label>
-                    <input type="text" id="option_b" name="option_b">
-                </div>
-
-
-                <div>
-                    <label for="option_c">Option C</label>
-                    <input type="text" id="option_c" name="option_c">
-                </div>
-
-
-                <div>
-                    <label for="option_d">Option D</label>
-                    <input type="text" id="option_d" name="option_d">
-                </div>
-
-
-                <div>
-                    <label for="answer">Answer</label>
-                    <select name="answer" id="answer">
-                        <option value="a">option A</option>
-                        <option value="b">option B</option>
-                        <option value="c">option C</option>
-                        <option value="d">option D</option>
-                    </select>
-                </div>
-
-                <input type="submit" value="Add question">
+                  
+                  
+                
             </form>
-        </div>
-
-        <div id="added_question">
-            <form action="">
-                <select id="imported_question_select">
-                    @foreach ($importedQuestions as $importedQuestion)
-                        <option value="{{ $importedQuestion['id'] }}">{!! $importedQuestion['question'] !!}</option>
-                    @endforeach
-                </select>
-            </form>
-            <div id="selected_question_details">
-
-            </div>
-
-            <div id="add_selected_question_form_div">
-                <form id="add_selected_question_form" action="">
+            <div id="new_question">
+                <form id="add_question_form">
                     @csrf
-
-                    <input type="text" name="importedQuestion" id="importedQuestion" hidden>
-                    <input type="text" name="importedQuestion_option_a" id="importedQuestion_option_a" hidden>
-                    <input type="text" name="importedQuestion_option_b" id="importedQuestion_option_b" hidden>
-                    <input type="text" name="importedQuestion_option_c" id="importedQuestion_option_c" hidden>
-                    <input type="text" name="importedQuestion_option_d" id="importedQuestion_option_d" hidden>
-                    <input type="text" name="importedQuestion_answer" id="importedQuestion_answer" hidden>
-                    <input type="submit" value="Add This Question in Exam Paper">
+                    <div class="form-group">
+                        <label for="question">Question</label>
+                        <input type="text" id="question" class="form-control" name="question">
+                    </div>
+    
+    
+                    <div class="form-group">
+                        <label for="option_a">Option A</label>
+                        <input type="text" id="option_a" class="form-control" name="option_a">
+                    </div>
+    
+    
+                    <div class="form-group">
+                        <label for="option_b">Option B</label>
+                        <input type="text" id="option_b" class="form-control" name="option_b">
+                    </div>
+    
+    
+                    <div class="form-group">
+                        <label for="option_c">Option C</label>
+                        <input type="text" id="option_c" class="form-control" name="option_c">
+                    </div>
+    
+    
+                    <div class="form-group">
+                        <label for="option_d">Option D</label>
+                        <input type="text" id="option_d" class="form-control" name="option_d">
+                    </div>
+                    <div class="form-group">
+                        <label for="answer">Answer</label>
+                        <select class="form-control" name="answer" id="answer">
+                            <option value="a">option A</option>
+                            <option value="b">option B</option>
+                            <option value="c">option C</option>
+                            <option value="d">option D</option>
+                        </select>
+                      </div>
+    
+                   
+    
+                    <input type="submit" class="btn btn-primary mt-3" value="Add question">
                 </form>
             </div>
-        </div>
-
-        <div id="questions">
-            <table border="1px" id="questions_table">
-                <thead>
-                    <tr>
-                        <th>sr No</th>
-                        <th>Question</th>
-                        <th>option A</th>
-                        <th>Option B</th>
-                        <th>Option C</th>
-                        <th>Option D</th>
-                        <th>Answer</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <?php $srNo = 1; ?>
-                <tbody>
-                    @foreach ($questions as $key => $question)
-                        <tr id="{{ $question->id }}">
-                            <td>{{ $srNo++ }}</td>
-                            <td>{{ $question->question }}</td>
-                            <td>{{ $question->option_a }}</td>
-                            <td>{{ $question->option_b }}</td>
-                            <td>{{ $question->option_c }}</td>
-                            <td>{{ $question->option_d }}</td>
-                            <td>{{ $question->answer }}</td>
-
-                            <td><a href="{{ route('exam.delete.question', $question->id) }}">Delete</a></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-        </div>
+                <div id="added_question">
+                    <form action="">
+                        <select id="imported_question_select">
+                            @foreach ($importedQuestions as $importedQuestion)
+                                <option value="{{ $importedQuestion['id'] }}">{!! $importedQuestion['question'] !!}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                    <div id="selected_question_details">
+        
+                    </div>
+        
+                    <div id="add_selected_question_form_div">
+                        <form id="add_selected_question_form" action="">
+                            @csrf
+        
+                            <input type="text" name="importedQuestion" id="importedQuestion" hidden>
+                            <input type="text" name="importedQuestion_option_a" id="importedQuestion_option_a" hidden>
+                            <input type="text" name="importedQuestion_option_b" id="importedQuestion_option_b" hidden>
+                            <input type="text" name="importedQuestion_option_c" id="importedQuestion_option_c" hidden>
+                            <input type="text" name="importedQuestion_option_d" id="importedQuestion_option_d" hidden>
+                            <input type="text" name="importedQuestion_answer" id="importedQuestion_answer" hidden>
+                            <input type="submit" value="Add This Question in Exam Paper">
+                        </form>
+                    </div>
+                </div>
+            </div>
     </div>
-</body>
-
+  
+            <div id="questions" class="table-responsive mt-4" style="width: 100%;display:block;">
+                <table  class="table" id="questions_table" >
+                    <thead>
+                        <tr>
+                            <th>sr No</th>
+                            <th>Question</th>
+                            <th>option A</th>
+                            <th>Option B</th>
+                            <th>Option C</th>
+                            <th>Option D</th>
+                            <th>Answer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <?php $srNo = 1; ?>
+                    <tbody>
+                        @foreach ($questions as $key => $question)
+                            <tr id="{{ $question->id }}">
+                                <td>{{ $srNo++ }}</td>
+                                <td>{!! $question->question !!}</td>
+                                <td>{{ $question->option_a }}</td>
+                                <td>{{ $question->option_b }}</td>
+                                <td>{{ $question->option_c }}</td>
+                                <td>{{ $question->option_d }}</td>
+                                <td>{{ $question->answer }}</td>
+    
+                                <td><a href="{{ route('exam.delete.question', $question->id) }}">Delete</a></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+    
+            </div>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
 <script type="text/javascript">
     $(document).ready(function() {
         document.getElementById('added_question').style.display = "none";
@@ -333,5 +350,4 @@
 
     });
 </script>
-
-</html>
+    @endsection
