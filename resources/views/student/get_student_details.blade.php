@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('student.layouts.layout')
 @section('content')
 
     <section class="bg-custom">

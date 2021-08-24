@@ -28,7 +28,7 @@
     @endif
         <div>
             {{$errors}}
-            <form class="forms-sample" action="{{ route('exam.store') }}" method="POST">
+            <form class="forms-sample" action="{{ route('admin.exam.store') }}" method="POST">
                 @csrf
 
                 <div class="row">
@@ -38,7 +38,7 @@
                             <label for="name">Name of Exam</label>
                             <input type="text" name="name" id="name" class="form-control"  placeholder="" />
                           </div>
-                       
+
                     </div>
 
 
@@ -82,10 +82,10 @@
                     </div>
 
                 </div>
-                
+
                 <input type="submit" value="Create new exam" class="btn btn-primary my-4">
 
-                
+
             </form>
         </div>
       </div>

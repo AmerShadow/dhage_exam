@@ -67,10 +67,10 @@ class ExamController extends Controller
         }
 
         return [
-            "questions" => $questions,
-            "is_exam_started" => $isExamStarted,
-            "student" => $this->student,
             'student_exam' => $this->studentExam,
+            "student" => $this->student,
+            "is_exam_started" => $isExamStarted,
+            "questions" => $questions,
         ];
     }
 

@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('student.layouts.layout')
 @section('content')
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
@@ -43,19 +43,23 @@
                     <hr>
                     <div class="mt-4">
                         <!-- Group of default radios - option 1 -->
+
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="groupOfDefaultRadios">
-                            <label class="custom-control-label" for="opt1">
-                                <p id="option_a_widget">{!! $questionPaper['questions']->first()->option_a !!}</p> <span>option
+                            <input type="radio" class="custom-control-input" name="groupOfDefaultRadios"
+                                id="option_a_widget_input" value="1">
+
+                            <label class="custom-control-label" for="option_a_widget_input">
+                                <p id="option_a_widget"></p> <span>option
                                     Marathi</span>
                             </label>
                         </div>
 
+
                         <!-- Group of default radios - option 2 -->
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="option_b_widget"
-                                name="groupOfDefaultRadios">
-                            <label class="custom-control-label" for="opt1">
+                            <input type="radio" class="custom-control-input" id="option_b_widget_input"
+                                name="groupOfDefaultRadios" value="2">
+                            <label class="custom-control-label" for="option_b_widget_input">
                                 <p id="option_b_widget">{!! $questionPaper['questions']->first()->option_b !!}</p><span>option Marathi</ span>
                             </label>
 
@@ -63,16 +67,17 @@
 
                         <!-- Group of default radios - option 3 -->
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="option_c_widget"
-                                name="groupOfDefaultRadios">
-                            <label class="custom-control-label" for="opt1">
+                            <input type="radio" class="custom-control-input" id="option_c_widget_input"
+                                name="groupOfDefaultRadios" value="3">
+                            <label class="custom-control-label" for="option_c_widget_input">
                                 <p id="option_c_widget">{!! $questionPaper['questions']->first()->option_c !!}</p><span>option Marathi</ span>
                             </label>
                         </div>
                         <!-- Group of default radios - option 3 -->
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="groupOfDefaultRadios">
-                            <label class="custom-control-label" for="opt1">
+                            <input type="radio" class="custom-control-input" name="groupOfDefaultRadios"
+                                id="option_d_widget_input" value="4">
+                            <label class="custom-control-label" for="option_d_widget_input">
                                 <p id="option_d_widget">{!! $questionPaper['questions']->first()->option_d !!}</p><span>option Marathi</ span>
                             </label>
                         </div>
@@ -92,9 +97,16 @@
                             id="save_and_next">Save & Next</a>
 
                     </div>
+
+
+                    <div class="col-md-2 m-0 p-0">
+                        <a href="http://" class="btn btn-custom btn-md btn-outline-danger shadow-none"
+                            rel="noopener noreferrer" id="next_question">Next</a>
+                    </div>
+
                     <div class="col-md-3 m-0 p-0">
                         <a class="btn btn-custom btn-md btn-success shadow-none" rel="noopener noreferrer"
-                            id="submit_exam">Submit</a>
+                            id="submit">Submit</a>
 
                     </div>
                 </div>
@@ -146,8 +158,11 @@
 
                     <script type="text/javascript">
                         $(document).ready(function() {
-                            var durationInMinutes = {{ $questionPaper['student_exam']['time_remaining'] }};
+                            var backObject = @json($questionPaper);
                             var questions = @json($questionPaper['questions']);
+
+
+                            var durationInMinutes = {{ $questionPaper['student_exam']['time_remaining'] }};
                             var studentName = "{{ $questionPaper['student']['name'] }}";
                             var questionsCount = "{{ $questionPaper['questions']->count() }}";
 
@@ -159,9 +174,7 @@
 
                             var attemptedQuestionsCount =
                                 "{{ $questionPaper['questions']->whereNotNull('selected_answer')->count() ?? 0 }}";
-                            var notAtteptedQuestionCount =
-                                "{{ $questionPaper['questions']->whereNull('selected_answer')->count() ?? 0 }}";
-
+                            var notAtteptedQuestionCount = 0;
 
 
 
@@ -173,48 +186,11 @@
                             OptionCWidget.html(questions[0]['option_c']);
                             OptionDWidget.html(questions[0]['option_d']);
 
-                            $('#save_and_next').on('click', function() {
-                                var questionNumber = parseInt(questionWidget.attr("number"));
+                            $('#save_and_next').on('click', saveAndNext);
+                            $('#next_question').on("click", nextQuestion);
+                            $('#submit').on('click', submitExam);
+                            $('#save').on('click', save);
 
-                                //alert(questions.length+questionNumber);
-
-                                if (questionNumber <= questions.length - 1) {
-                                    //alert(" question number = "+questionNumber+" questions length = "+questions.length);
-                                    questionNumber++;
-
-                                    questionWidget.html(questionNumber + " . " + questions[questionNumber - 1]['question']);
-
-                                    OptionAWidget.html(questions[questionNumber - 1]['option_a']);
-                                    OptionBWidget.html(questions[questionNumber - 1]['option_b']);
-                                    OptionCWidget.html(questions[questionNumber - 1]['option_c']);
-                                    OptionDWidget.html(questions[questionNumber - 1]['option_d']);
-
-                                    questionWidget.attr("number", questionNumber);
-
-                                    alert("question_panel_anchor_" + (questionNumber - 1));
-
-                                    $("#question_panel_anchor_" + (questionNumber - 1)).css("btn-success");
-
-                                    $("#question_panel_anchor_" + (questionNumber - 1)).removeAttr("class");
-                                    $("#question_panel_anchor_" + (questionNumber - 1)).attr("class",
-                                        "btn-floating btn-success d-flex align-items-center");
-                                        attemptedQuestionsCount++;
-                                        notAtteptedQuestionCount--;
-
-                                        $("#not_attempted_question_count").text(notAtteptedQuestionCount);
-
-
-                                        $("#attempted_question_count").text(attemptedQuestionsCount);
-
-
-
-
-                                } else {
-                                    alert('This is the last question');
-                                }
-
-                                //questionWidget.attr("number", "1");
-                            });
 
                             setQuestionsListPanelWidget();
 
@@ -229,8 +205,9 @@
                             var secondsWidget = $('#seconds').text(60);
                             var minutesWidget = $('#minutes').text(--durationInMinutes);
 
-
+                            var timeCounter = 0;
                             setInterval(function() {
+                                timeCounter++;
                                 let seconds = secondsWidget.text();
                                 let minutes = minutesWidget.text();
 
@@ -246,16 +223,65 @@
                                 }
                                 secondsWidget.text(seconds);
                                 minutesWidget.text(minutes);
+
+                                if (timeCounter % 300 == 0) {
+                                    updateExam();
+                                    alert('send data to server');
+                                }
                             }, 1000);
 
 
                             function submitExam() {
-                                alert('your exam submitted successfully');
+                                //alert('submit clicked');
+                                let url = "{{ route('submit.exam') }}";
+
+                                $.ajax({
+                                    url: url,
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        "_token": "{{ csrf_token() }}",
+                                        "data": backObject,
+
+                                    },
+                                    success: function(result) {
+                                        alert("success");
+                                        console.log(result);
+                                    },
+                                    error: function(xhr, resp, text) {
+                                        console.log(xhr, resp, text);
+                                    }
+                                });
                             }
+
+
+                            function updateExam() {
+                                //alert('submit clicked');
+                                let url = "{{ route('update.exam') }}";
+                                $.ajax({
+                                    url: url,
+                                    type: "POST",
+                                    dataType: "json",
+                                    data: {
+                                        "_token": "{{ csrf_token() }}",
+                                        "data": backObject,
+                                    },
+                                    success: function(result) {
+                                        alert("success");
+                                        console.log(result);
+                                    },
+                                    error: function(xhr, resp, text) {
+                                        console.log(xhr, resp, text);
+                                    }
+                                });
+                            }
+
+
+
 
                             function setQuestionsListPanelWidget() {
                                 for (let i = 0; i < questions.length; i++) {
-                                    if (questions[i]['is_attempted']) {
+                                    if (backObject['questions'][i]['is_attempted']) {
                                         $("#questions_panel_widget").append(
                                             `<li class="list-inline-item active" id="question_panel_` + (i + 1) +
                                             `">
@@ -277,23 +303,162 @@
 
 
                             for (let i = 0; i < questions.length; i++) {
-                                const element = "#question_panel_anchor_" + (i+1);
-
+                                const element = "#question_panel_anchor_" + (i + 1);
                                 $(element).on('click', function() {
-                                    x=i+1;
-
+                                    x = i + 1;
                                     questionWidget.html(x + " . " + questions[i]['question']);
-
                                     OptionAWidget.html(questions[i]['option_a']);
                                     OptionBWidget.html(questions[i]['option_b']);
                                     OptionCWidget.html(questions[i]['option_c']);
                                     OptionDWidget.html(questions[i]['option_d']);
-
                                     questionWidget.attr("number", x);
-                                });
+                                    console.log("answer : " + backObject['questions'][i]['selected_answer']);
 
+
+                                    switch (backObject['questions'][i]['selected_answer']) {
+                                        case "1":
+                                            $('#option_a_widget_input').prop('checked', true);
+                                            break;
+                                        case "2":
+                                            $('#option_b_widget_input').prop('checked', true);
+                                            break;
+                                        case "3":
+                                            $('#option_c_widget_input').prop('checked', true);
+                                            break;
+                                        case "4":
+                                            $('#option_d_widget_input').prop('checked', true);
+                                            break;
+                                        default:
+                                            $('input:radio[name=groupOfDefaultRadios]').each(function() {
+                                                $(this).prop('checked', false);
+                                            });
+                                            break;
+                                    }
+
+                                });
                             }
 
+
+                            function nextQuestion() {
+                                var questionNumber = parseInt(questionWidget.attr("number"));
+                                //alert(questions.length+questionNumber);
+                                if (questionNumber <= questions.length - 1) {
+                                    //alert(" question number = "+questionNumber+" questions length = "+questions.length);
+                                    questionNumber++;
+                                    questionWidget.html(questionNumber + " . " + questions[questionNumber - 1]['question']);
+                                    OptionAWidget.html(questions[questionNumber - 1]['option_a']);
+                                    OptionBWidget.html(questions[questionNumber - 1]['option_b']);
+                                    OptionCWidget.html(questions[questionNumber - 1]['option_c']);
+                                    OptionDWidget.html(questions[questionNumber - 1]['option_d']);
+
+                                    questionWidget.attr("number", questionNumber);
+
+                                    //alert("question_panel_anchor_" + (questionNumber - 1));
+
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).css("btn-danger");
+
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).removeAttr("class");
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).attr("class",
+                                        "btn-floating btn-danger d-flex align-items-center");
+                                    //attemptedQuestionsCount++;
+                                    notAtteptedQuestionCount++;
+
+                                    $("#not_attempted_question_count").text(notAtteptedQuestionCount);
+
+
+                                    $("#attempted_question_count").text(attemptedQuestionsCount);
+
+
+
+
+                                } else {
+                                    alert('This is the last question');
+                                }
+
+                                //questionWidget.attr("number", "1");
+                            }
+
+                            function saveAndNext() {
+                                var questionNumber = parseInt(questionWidget.attr("number"));
+                                let selectedOption = $('input[name="groupOfDefaultRadios"]:checked').val();
+                                if (!selectedOption) {
+                                    return alert("NO option selected.!");
+                                }
+
+
+                                if (!backObject['questions'][questionNumber - 1]['selected_answer']) {
+                                    attemptedQuestionsCount++;
+                                    //notAtteptedQuestionCount--;
+
+                                    //$("#not_attempted_question_count").text(notAtteptedQuestionCount);
+                                    $("#attempted_question_count").text(attemptedQuestionsCount);
+
+                                }
+
+                                backObject['questions'][questionNumber - 1]['selected_answer'] = selectedOption;
+
+
+
+
+                                // console.log("obj : ");
+                                // console.log(backObject);
+                                //alert(questions.length+questionNumber);
+                                if (questionNumber <= questions.length - 1) {
+                                    questionNumber++;
+
+                                    questionWidget.html(questionNumber + " . " + questions[questionNumber - 1]['question']);
+
+                                    OptionAWidget.html(questions[questionNumber - 1]['option_a']);
+                                    OptionBWidget.html(questions[questionNumber - 1]['option_b']);
+                                    OptionCWidget.html(questions[questionNumber - 1]['option_c']);
+                                    OptionDWidget.html(questions[questionNumber - 1]['option_d']);
+
+                                    questionWidget.attr("number", questionNumber);
+
+                                    // alert("question_panel_anchor_" + (questionNumber - 1));
+
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).css("btn-success");
+
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).removeAttr("class");
+                                    $("#question_panel_anchor_" + (questionNumber - 1)).attr("class",
+                                        "btn-floating btn-success d-flex align-items-center");
+
+                                    let selectedOption = $('input[name="groupOfDefaultRadios"]:checked').val();
+
+                                } else {
+                                    alert('This is the last question');
+                                }
+                                $('input:radio[name=groupOfDefaultRadios]').each(function() {
+                                    $(this).prop('checked', false);
+                                });
+                                //questionWidget.attr("number", "1");
+                            }
+
+                            function save() {
+                                var questionNumber = parseInt(questionWidget.attr("number"));
+                                let selectedOption = $('input[name="groupOfDefaultRadios"]:checked').val();
+                                if (!selectedOption) {
+                                    return alert("NO option selected.!");
+                                }
+
+                                backObject['questions'][questionNumber - 1]['selected_answer'] = selectedOption;
+                                console.log(backObject['questions'][questionNumber - 1]);
+                                $("#question_panel_anchor_" + questionNumber).css("btn-success");
+
+                                $("#question_panel_anchor_" + questionNumber).removeAttr("class");
+                                $("#question_panel_anchor_" + questionNumber).attr("class",
+                                    "btn-floating btn-success d-flex align-items-center");
+
+
+                                attemptedQuestionsCount++;
+                                notAtteptedQuestionCount++;
+
+                                $("#not_attempted_question_count").text(notAtteptedQuestionCount);
+                                $("#attempted_question_count").text(attemptedQuestionsCount);
+
+                                updateExam();
+
+                            }
 
 
 

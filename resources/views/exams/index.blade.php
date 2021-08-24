@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Add Exam</h4>
-          
+
           </p>
           <div class="table-responsive">
             <table class="table">
@@ -46,32 +46,32 @@
                                 @break
                             @case(2)
                                  <p>Paper Set</p>
-            
+
                                 @break
                             @default
-            
+
                         @endswitch</td>
                         <td>
                             @switch($exam->status)
                                 @case(1)
-                                    <a href="{{route('exam.set.paper',$exam)}}">Set Paper</a>
+                                    <a href="{{route('admin.exam.set.paper',$exam)}}">Set Paper</a>
                                     @break
                                 @case(2)
                                      <a href="#">Edit Paper</a>
                                     @break
                                 @default
-            
+
                             @endswitch
                         </td>
-            
-            
+
+
                     </tr>
                 @endforeach
-            </table> 
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-    
+
 @endsection

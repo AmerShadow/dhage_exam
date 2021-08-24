@@ -11,7 +11,7 @@
       </div>
       <div class="card">
           <div class="card-body">
-            
+
           </div>
       </div>
       <div class="card">
@@ -40,14 +40,14 @@
                         <label class="form-check-label">
                           <input type="radio" class="form-check-input" name="question_type" id="added_question_radio" value="added_question_radio" /> Add Question From QUestion Bank </label>
                       </div>
-                    
-                   
-                    
+
+
+
                   </div>
 
-                  
-                  
-                
+
+
+
             </form>
             <div id="new_question">
                 <form id="add_question_form">
@@ -56,26 +56,26 @@
                         <label for="question">Question</label>
                         <input type="text" id="question" class="form-control" name="question">
                     </div>
-    
-    
+
+
                     <div class="form-group">
                         <label for="option_a">Option A</label>
                         <input type="text" id="option_a" class="form-control" name="option_a">
                     </div>
-    
-    
+
+
                     <div class="form-group">
                         <label for="option_b">Option B</label>
                         <input type="text" id="option_b" class="form-control" name="option_b">
                     </div>
-    
-    
+
+
                     <div class="form-group">
                         <label for="option_c">Option C</label>
                         <input type="text" id="option_c" class="form-control" name="option_c">
                     </div>
-    
-    
+
+
                     <div class="form-group">
                         <label for="option_d">Option D</label>
                         <input type="text" id="option_d" class="form-control" name="option_d">
@@ -89,9 +89,9 @@
                             <option value="d">option D</option>
                         </select>
                       </div>
-    
-                   
-    
+
+
+
                     <input type="submit" class="btn btn-primary mt-3" value="Add question">
                 </form>
             </div>
@@ -104,13 +104,13 @@
                         </select>
                     </form>
                     <div id="selected_question_details">
-        
+
                     </div>
-        
+
                     <div id="add_selected_question_form_div">
                         <form id="add_selected_question_form" action="">
                             @csrf
-        
+
                             <input type="text" name="importedQuestion" id="importedQuestion" hidden>
                             <input type="text" name="importedQuestion_option_a" id="importedQuestion_option_a" hidden>
                             <input type="text" name="importedQuestion_option_b" id="importedQuestion_option_b" hidden>
@@ -123,7 +123,7 @@
                 </div>
             </div>
     </div>
-  
+
             <div id="questions" class="table-responsive mt-4" style="width: 100%;display:block;">
                 <table  class="table" id="questions_table" >
                     <thead>
@@ -149,15 +149,15 @@
                                 <td>{{ $question->option_c }}</td>
                                 <td>{{ $question->option_d }}</td>
                                 <td>{{ $question->answer }}</td>
-    
-                                <td><a href="{{ route('exam.delete.question', $question->id) }}">Delete</a></td>
+
+                                <td><a href="{{ route('admin.exam.delete.question', $question->id) }}">Delete</a></td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-    
+
             </div>
-        
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -174,7 +174,7 @@
             let option_c = $('#option_c').val();
             let option_d = $('#option_d').val();
             let answer = $('#answer').val();
-            url = "{{ route('exam.add.question', $exam->id) }}";
+            url = "{{ route('admin.exam.add.question', $exam->id) }}";
 
             if (question && option_a && option_b && option_c && option_d) {
                 $.ajax({
@@ -278,9 +278,9 @@
 
                 let question = $('#importedQuestion').val(importedQuestion);
                 let option_a = $('#importedQuestion_option_a').val(importedQuestion_option_a);
-                let option_b = $('#importedQuestion_option_a').val(importedQuestion_option_b);
-                let option_c = $('#importedQuestion_option_a').val(importedQuestion_option_c);
-                let option_d = $('#importedQuestion_option_a').val(importedQuestion_option_d);
+                let option_b = $('#importedQuestion_option_b').val(importedQuestion_option_b);
+                let option_c = $('#importedQuestion_option_c').val(importedQuestion_option_c);
+                let option_d = $('#importedQuestion_option_d').val(importedQuestion_option_d);
                 let answer = $('#importedQuestion_answer').val(importedQuestion_answer);
 
                 document.getElementById('add_selected_question_form_div').style.display = "block";
@@ -294,15 +294,17 @@
 
             let question = $('#importedQuestion').val();
             let option_a = $('#importedQuestion_option_a').val();
-            let option_b = $('#importedQuestion_option_a').val();
-            let option_c = $('#importedQuestion_option_a').val();
-            let option_d = $('#importedQuestion_option_a').val();
+            let option_b = $('#importedQuestion_option_b').val();
+            let option_c = $('#importedQuestion_option_c').val();
+            let option_d = $('#importedQuestion_option_d').val();
             let answer = $('#importedQuestion_answer').val();
 
-            url = "{{ route('exam.add.question', $exam->id) }}";
+            url = "{{ route('admin.exam.add.question', $exam->id) }}";
 
 
             if (question && option_a && option_b && option_c && option_d  && answer) {
+
+
                 $.ajax({
                     url: url,
                     type: "POST",
@@ -321,6 +323,7 @@
                             let question = result['data'];
 
                             let questionsTable = $("#questions_table tr:last");
+
                             let tr = `
                             <tr id="${question['id']}">
                                 <td>{{ $srNo++ }}</td>
