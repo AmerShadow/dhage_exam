@@ -86,7 +86,7 @@
                 </div>
                 <div class="row text-right   ">
                     <div class="col-md-2 m-0 p-0">
-                        <a href="http://" class="btn btn-custom btn-md btn-outline-danger shadow-none"
+                        <a class="btn btn-custom btn-md btn-outline-danger shadow-none"
                             rel="noopener noreferrer" id="save">Save</a>
                     </div>
 
@@ -100,7 +100,7 @@
 
 
                     <div class="col-md-2 m-0 p-0">
-                        <a href="http://" class="btn btn-custom btn-md btn-outline-danger shadow-none"
+                        <a  class="btn btn-custom btn-md btn-outline-danger shadow-none"
                             rel="noopener noreferrer" id="next_question">Next</a>
                     </div>
 
