@@ -60,7 +60,7 @@
                             <input type="radio" class="custom-control-input" id="option_b_widget_input"
                                 name="groupOfDefaultRadios" value="2">
                             <label class="custom-control-label" for="option_b_widget_input">
-                                <p id="option_b_widget">{!! $questionPaper['questions']->first()->option_b !!}</p><span>option Marathi</ span>
+                                <p id="option_b_widget"></p><span>option Marathi</ span>
                             </label>
 
                         </div>
@@ -70,7 +70,7 @@
                             <input type="radio" class="custom-control-input" id="option_c_widget_input"
                                 name="groupOfDefaultRadios" value="3">
                             <label class="custom-control-label" for="option_c_widget_input">
-                                <p id="option_c_widget">{!! $questionPaper['questions']->first()->option_c !!}</p><span>option Marathi</ span>
+                                <p id="option_c_widget"></p><span>option Marathi</ span>
                             </label>
                         </div>
                         <!-- Group of default radios - option 3 -->
@@ -86,8 +86,8 @@
                 </div>
                 <div class="row text-right   ">
                     <div class="col-md-2 m-0 p-0">
-                        <a class="btn btn-custom btn-md btn-outline-danger shadow-none"
-                            rel="noopener noreferrer" id="save">Save</a>
+                        <a class="btn btn-custom btn-md btn-outline-danger shadow-none" rel="noopener noreferrer"
+                            id="save">Save</a>
                     </div>
 
 
@@ -100,9 +100,16 @@
 
 
                     <div class="col-md-2 m-0 p-0">
-                        <a  class="btn btn-custom btn-md btn-outline-danger shadow-none"
-                            rel="noopener noreferrer" id="next_question">Next</a>
+                        <a class="btn btn-custom btn-md btn-outline-danger shadow-none" rel="noopener noreferrer"
+                            id="next_question">Next</a>
                     </div>
+
+                    <div class="col-md-2 m-0 p-0">
+                        <a class="btn btn-custom btn-md btn-outline-danger shadow-none" rel="noopener noreferrer"
+                            id="update">Update</a>
+                    </div>
+
+
 
                     <div class="col-md-3 m-0 p-0">
                         <a class="btn btn-custom btn-md btn-success shadow-none" rel="noopener noreferrer"
@@ -164,7 +171,6 @@
 
                             var durationInMinutes = {{ $questionPaper['student_exam']['time_remaining'] }};
                             var studentName = "{{ $questionPaper['student']['name'] }}";
-                            var questionsCount = "{{ $questionPaper['questions']->count() }}";
 
                             var questionWidget = $("#question_widget");
                             var OptionAWidget = $("#option_a_widget");
@@ -172,12 +178,15 @@
                             var OptionCWidget = $("#option_c_widget");
                             var OptionDWidget = $("#option_d_widget");
 
+                            var questionsCount = "{{ $questionPaper['questions']->count() }}";
                             var attemptedQuestionsCount =
                                 "{{ $questionPaper['questions']->whereNotNull('selected_answer')->count() ?? 0 }}";
                             var notAtteptedQuestionCount = 0;
 
+                            //$("#update_test").on('click', updateExam);
 
 
+                            console.log(questions);
                             questionWidget.html(1 + " . " + questions[0]['question']);
                             questionWidget.attr("number", "1");
 
@@ -186,13 +195,35 @@
                             OptionCWidget.html(questions[0]['option_c']);
                             OptionDWidget.html(questions[0]['option_d']);
 
+                            switch (backObject['questions'][0]['selected_answer']) {
+                                        case "1":
+                                            $('#option_a_widget_input').prop('checked', true);
+                                            break;
+                                        case "2":
+                                            $('#option_b_widget_input').prop('checked', true);
+                                            break;
+                                        case "3":
+                                            $('#option_c_widget_input').prop('checked', true);
+                                            break;
+                                        case "4":
+                                            $('#option_d_widget_input').prop('checked', true);
+                                            break;
+                                        default:
+                                            $('input:radio[name=groupOfDefaultRadios]').each(function() {
+                                                $(this).prop('checked', false);
+                                            });
+                                            break;
+                                    }
+
+                            if (backObject['is_exam_started']) {
+                                setQuestionNumberPanel();
+                            }
+
                             $('#save_and_next').on('click', saveAndNext);
                             $('#next_question').on("click", nextQuestion);
-                            $('#submit').on('click', submitExam);
+                            $('#submit').on('click', submitButtonClicked);
                             $('#save').on('click', save);
-
-
-                            setQuestionsListPanelWidget();
+                            $('#update').on('click', updateExam);
 
                             $("#student_name").text(studentName);
                             $("#all_questions_count").text(questionsCount);
@@ -200,6 +231,7 @@
                             $("#not_attempted_question_count").text(notAtteptedQuestionCount);
 
 
+                            setQuestionsListPanelWidget();
 
 
                             var secondsWidget = $('#seconds').text(60);
@@ -213,7 +245,6 @@
 
                                 if (seconds <= 0) {
                                     if (minutes <= 0) {
-                                        alert('Your test submitted successfully');
                                         submitExam();
                                     }
                                     seconds = 59;
@@ -226,15 +257,20 @@
 
                                 if (timeCounter % 300 == 0) {
                                     updateExam();
-                                    alert('send data to server');
                                 }
                             }, 1000);
 
 
-                            function submitExam() {
-                                //alert('submit clicked');
-                                let url = "{{ route('submit.exam') }}";
+                            function submitButtonClicked() {
+                                if (confirm('Do you really want to submit this exam.?')) {
+                                    submitExam();
+                                }
+                            }
 
+
+                            function submitExam() {
+
+                                let url = "{{ route('submit.exam') }}";
                                 $.ajax({
                                     url: url,
                                     type: "POST",
@@ -245,7 +281,17 @@
 
                                     },
                                     success: function(result) {
-                                        alert("success");
+                                        if (result['status'] == 'S') {
+                                            alert(result['message']);
+                                            window.location.replace("{{ route('exam.completed.message') }}");
+
+                                        } else {
+                                            alert(result['message']);
+                                            if (result['is_submitted'] == 1) {
+                                                window.location.replace("{{ route('exam.completed.message') }}");
+                                            }
+                                        }
+
                                         console.log(result);
                                     },
                                     error: function(xhr, resp, text) {
@@ -256,7 +302,7 @@
 
 
                             function updateExam() {
-                                //alert('submit clicked');
+
                                 let url = "{{ route('update.exam') }}";
                                 $.ajax({
                                     url: url,
@@ -267,7 +313,17 @@
                                         "data": backObject,
                                     },
                                     success: function(result) {
-                                        alert("success");
+                                        if (result['status'] == 'S') {
+                                            console.log("Exam updated successfully");
+                                            // backObject = result['backObject'];
+
+                                        } else {
+                                            alert(result['message']);
+                                            if (result['is_submitted'] == 1) {
+                                                window.location.replace("{{ route('exam.completed.message') }}");
+                                            }
+                                        }
+
                                         console.log(result);
                                     },
                                     error: function(xhr, resp, text) {
@@ -281,7 +337,7 @@
 
                             function setQuestionsListPanelWidget() {
                                 for (let i = 0; i < questions.length; i++) {
-                                    if (backObject['questions'][i]['is_attempted']) {
+                                    if (backObject['questions'][i]['selected_answer']) {
                                         $("#questions_panel_widget").append(
                                             `<li class="list-inline-item active" id="question_panel_` + (i + 1) +
                                             `">
@@ -302,7 +358,7 @@
                             }
 
 
-                            for (let i = 0; i < questions.length; i++) {
+                            for (let i = 0; i < backObject['questions'].length; i++) {
                                 const element = "#question_panel_anchor_" + (i + 1);
                                 $(element).on('click', function() {
                                     x = i + 1;
@@ -361,15 +417,9 @@
                                     $("#question_panel_anchor_" + (questionNumber - 1)).attr("class",
                                         "btn-floating btn-danger d-flex align-items-center");
                                     //attemptedQuestionsCount++;
-                                    notAtteptedQuestionCount++;
-
-                                    $("#not_attempted_question_count").text(notAtteptedQuestionCount);
-
-
+                                   // notAtteptedQuestionCount++;
+                                    $("#not_attempted_question_count").text(++notAtteptedQuestionCount);
                                     $("#attempted_question_count").text(attemptedQuestionsCount);
-
-
-
 
                                 } else {
                                     alert('This is the last question');
@@ -379,6 +429,7 @@
                             }
 
                             function saveAndNext() {
+                                //updateExam();
                                 var questionNumber = parseInt(questionWidget.attr("number"));
                                 let selectedOption = $('input[name="groupOfDefaultRadios"]:checked').val();
                                 if (!selectedOption) {
@@ -388,22 +439,12 @@
 
                                 if (!backObject['questions'][questionNumber - 1]['selected_answer']) {
                                     attemptedQuestionsCount++;
-                                    //notAtteptedQuestionCount--;
-
-                                    //$("#not_attempted_question_count").text(notAtteptedQuestionCount);
                                     $("#attempted_question_count").text(attemptedQuestionsCount);
 
                                 }
 
                                 backObject['questions'][questionNumber - 1]['selected_answer'] = selectedOption;
-
-
-
-
-                                // console.log("obj : ");
-                                // console.log(backObject);
-                                //alert(questions.length+questionNumber);
-                                if (questionNumber <= questions.length - 1) {
+                                 if (questionNumber <= questions.length - 1) {
                                     questionNumber++;
 
                                     questionWidget.html(questionNumber + " . " + questions[questionNumber - 1]['question']);
@@ -435,7 +476,14 @@
                             }
 
                             function save() {
+
                                 var questionNumber = parseInt(questionWidget.attr("number"));
+
+                                if(! backObject['questions'][questionNumber - 1]['selected_answer']){
+                                    attemptedQuestionsCount++;
+                                }
+
+
                                 let selectedOption = $('input[name="groupOfDefaultRadios"]:checked').val();
                                 if (!selectedOption) {
                                     return alert("NO option selected.!");
@@ -450,17 +498,18 @@
                                     "btn-floating btn-success d-flex align-items-center");
 
 
-                                attemptedQuestionsCount++;
-                                notAtteptedQuestionCount++;
 
-                                $("#not_attempted_question_count").text(notAtteptedQuestionCount);
+                              //  notAtteptedQuestionCount++;
+
+                              //  $("#not_attempted_question_count").text(notAtteptedQuestionCount);
                                 $("#attempted_question_count").text(attemptedQuestionsCount);
 
-                                updateExam();
+                                // updateExam();
 
                             }
 
-
+                            function setQuestionNumberPanel() {
+                            }
 
 
                         });

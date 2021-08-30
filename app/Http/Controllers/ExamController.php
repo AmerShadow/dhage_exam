@@ -33,7 +33,7 @@ class ExamController extends Controller
             $response = Http::get($url);
         } catch (\Throwable $th) {
             print("Unable to get branches");
-            return redirect()->route('exam.create')->with('unsuccess', 'Unable to get branches');
+            return redirect()->route('admin.exam.create')->with('unsuccess', 'Unable to get branches');
         }
         $data = $response->json();
         if ($data['status'] == "S") {
@@ -98,7 +98,7 @@ class ExamController extends Controller
                         $examinee->dob="";
                         $examinee->save();
                     }
-                    return redirect()->route('exam.index')->with('success','Exam Added seccessfully');
+                    return redirect()->route('admin.exam.index')->with('success','Exam Added seccessfully');
 
                 }
             } else {
@@ -126,7 +126,7 @@ class ExamController extends Controller
             $response = Http::get($url);
         } catch (\Throwable $th) {
             print("Unable to get branches");
-            return redirect()->route('exam.index')->with('unsuccess', 'Unable to get questions');
+            return redirect()->route('admin.exam.index')->with('unsuccess', 'Unable to get questions');
         }
         $data = $response->json();
         if ($data['status'] == "S") {
@@ -134,7 +134,7 @@ class ExamController extends Controller
             //return $questions;
             return view('paper.set', compact('questions','exam','importedQuestions'));
         } else {
-            return redirect()->route('exam.index')->with('unsuccess', 'Unable to get branches');
+            return redirect()->route('admin.exam.index')->with('unsuccess', 'Unable to get branches');
 
             return "no";
         }

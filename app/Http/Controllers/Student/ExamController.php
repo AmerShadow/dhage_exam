@@ -7,11 +7,13 @@ use App\ExamQuestion;
 use App\Http\Controllers\Controller;
 use App\Student;
 use App\StudentExam;
+use App\StudentExamAnswer;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Null_;
 
 use function PHPUnit\Framework\throwException;
 
@@ -23,7 +25,8 @@ class ExamController extends Controller
         try {
             $this->exam = $this->getExam($examId);
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $message="Invalid Exam.!";
+            return view('student.message',compact('message'));
         }
         return view('student.get_student_details')->with('exam', $this->exam);
     }
@@ -41,30 +44,45 @@ class ExamController extends Controller
         $this->exam = $this->getExam($examId);
         $this->student = $this->getExaminee($request, $this->exam->id);
         $this->request = $request;
+        $this->getStudentExam();
+
+
+        //return $this->studentExam;
 
         if (!$this->student) {
-            return "This test is not for your batch";
+            $message = "This test is not for your batch";
+            return view('student.message', compact('message'));
         }
 
+        if ($this->studentExam->time_remaining < 0 || $this->studentExam->is_completed) {
+            $message = "Test is already submitted";
+            return view('student.message', compact('message'));
+        }
 
+       $this->isExamStarted();
+        //return [$this->studentExam->time_remaining  , $this->studentExam->is_completed];
         $checkExamDateValidation = $this->examDateValidation();
 
         if ($checkExamDateValidation !== 0) {
             return $checkExamDateValidation;
         }
         $questionPaper = $this->getQuestionPaper();
-        return view('student.exam',compact('questionPaper'));
+        return view('student.exam', compact('questionPaper'));
     }
 
 
     public function getQuestionPaper()
     {
+
         $isExamStarted = $this->isExamStarted();
         if ($isExamStarted) {
             $questions = $this->resumeExam();
         } else {
             $questions = $this->startExam();
         }
+        $isExamStarted = $this->isExamStarted();
+
+
 
         return [
             'student_exam' => $this->studentExam,
@@ -93,6 +111,26 @@ class ExamController extends Controller
     }
 
 
+    public function getStudentExam()
+    {
+       // $isExamStarted = $this->isExamStarted();
+        if ($this->isExamStarted()) {
+            try {
+                $this->studentExam = StudentExam::where('student_id', $this->student->id)->first();
+                // if (!$this->studentExam) {
+                //     throw new Exception('Exam not found', 1);
+                // }
+            } catch (\Throwable $th) {
+                throw new Exception("Oops..! something went wrong. " . $th->getMessage(), 1);
+            };
+
+        } else {
+            $this->studentExam = new StudentExam();
+        }
+
+    }
+
+
     public function examDateValidation()
     {
         $start_date = date('Y-m-d h:i:s', strtotime($this->exam->start_date));
@@ -101,12 +139,15 @@ class ExamController extends Controller
         $now = date(Carbon::now());
 
         if ($start_date > $now) {
-            return "your exam is not started yet";
+
+            $message = "your exam is not started yet";
+            return view('student.message', compact('message'));
         }
 
 
         if ($end_date < $now) {
-            return "your exam is completed";
+            $message = "your exam is completed";
+            return view('student.message', compact('message'));
         }
         return 0;
     }
@@ -125,47 +166,61 @@ class ExamController extends Controller
         return StudentExam::where('exams_id', $this->exam->id)
             ->where('student_id', $this->student->id)
             ->where('is_started', 1)
-            ->where('is_completed', 0)
+            //->where('is_completed', '!=' ,1)
+            //->where('time_remaining','>',0)
             ->exists();
     }
 
 
     public function startExam()
     {
-        $this->studentExam = new StudentExam();
+        //$this->studentExam = new StudentExam();
         $this->studentExam->exams_id = $this->exam->id;
         $this->studentExam->student_id = $this->student->id;
         $this->studentExam->exam_seat_no = $this->student->exam_seat_no;
         $this->studentExam->is_started = true;
-        $this->studentExam->is_completed = false;
+        $this->studentExam->is_completed = 0;
         $this->studentExam->start_time = date(now());
         $this->studentExam->duration = $this->studentExam->time_remaining = $this->exam->duration;
 
+
+
         try {
             $this->studentExam->save();
-            $questions = ExamQuestion::leftJoin('student_exam_answers', 'exam_questions.id','=', 'student_exam_answers.exam_questions_id')
-            ->select(
-                "exam_questions.question",
-                "exam_questions.option_a",
-                "exam_questions.option_b",
-                "exam_questions.option_c",
-                "exam_questions.option_d",
-                "exam_questions.id",
-                "exam_questions.exams_id",
-                "student_exam_answers.answer as selected_answer"
-            )
-            ->where('exam_questions.exams_id', $this->exam->id)->get();
+            $studentExamQuestions = ExamQuestion::where('exams_id', $this->exam->id)->get();
+            foreach ($studentExamQuestions as $key => $studentExamQuestion) {
+                $studentExamAnswer = new StudentExamAnswer();
+                $studentExamAnswer->student_exams_id = $this->studentExam->id;
+                $studentExamAnswer->exam_questions_id = $studentExamQuestion->id;
+                $studentExamAnswer->save();
+            }
 
+            $questions = ExamQuestion::leftJoin('student_exam_answers', 'exam_questions.id', '=', 'student_exam_answers.exam_questions_id')
+                ->select(
+                    "exam_questions.question",
+                    "exam_questions.option_a",
+                    "exam_questions.option_b",
+                    "exam_questions.option_c",
+                    "exam_questions.option_d",
+                    "exam_questions.id",
+                    "exam_questions.exams_id",
+                    "student_exam_answers.answer as selected_answer",
+                    "student_exam_answers.student_exams_id"
+                )
+                ->where('exam_questions.exams_id', $this->exam->id)
+                ->where('student_exam_answers.student_exams_id', $this->studentExam->id)
+                ->get();
             return $questions;
         } catch (\Throwable $th) {
-            throw new Exception("Oops..! something went wrong", 1);
+            throw new Exception("Exception : " . $th->getMessage(), 1);
         };
     }
+
 
     public function resumeExam()
     {
         try {
-            $this->studentExam = StudentExam::where('student_id', $this->student->id)->first();
+            //$this->studentExam = StudentExam::where('student_id', $this->student->id)->first();
 
             if (!$this->studentExam) {
                 throw new Exception('Exam not found', 1);
@@ -174,10 +229,11 @@ class ExamController extends Controller
             throw new Exception("Oops..! something went wrong. " . $th->getMessage(), 1);
         };
 
+
         //return $this->studentExam;
         // $questions=ExamQuestion::where('exams_id', $this->exam->id)->get();
 
-        $questions = ExamQuestion::leftJoin('student_exam_answers', 'exam_questions.id','=', 'student_exam_answers.exam_questions_id')
+        return $questions = ExamQuestion::leftJoin('student_exam_answers', 'exam_questions.id', '=', 'student_exam_answers.exam_questions_id')
             ->select(
                 "exam_questions.question",
                 "exam_questions.option_a",
@@ -186,12 +242,18 @@ class ExamController extends Controller
                 "exam_questions.option_d",
                 "exam_questions.id",
                 "exam_questions.exams_id",
-                "student_exam_answers.answer as selected_answer"
+                "student_exam_answers.answer as selected_answer",
+                "student_exam_answers.student_exams_id"
             )
-            ->where('exam_questions.exams_id', $this->exam->id)->get();
+            ->where('exam_questions.exams_id', $this->exam->id)
+            ->where('student_exam_answers.student_exams_id', $this->studentExam->id)
+            ->get();
+        return $questions->where('student_exams_id', $this->studentExam->id);
+        // $questions = $questions->where('student_exams_id', $this->studentExam->id);
 
-        return $questions;
-        // ExamQuestion::join('student_exam_anwsers','')
-        // where('exams_id', $this->exam->id)->get()
+        // return $questions;
     }
+
+
+
 }
