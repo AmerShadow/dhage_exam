@@ -26,7 +26,7 @@ Route::get('exam/{examId}', 'Student\ExamController@startExamView')->name('start
 Route::post('exam/{examId}', 'Student\ExamController@startExamPost')->name('start.exam');
 ROute::post('submit/exam/','Student\ExamSubmit@submitExam')->name('submit.exam');
 ROute::post('update/exam','Student\ExamStatusUpdate@updateExamStatus')->name('update.exam');
-Route::get('exam/completed/message','student\ExamSubmit@examCompletedMEssage')->name('exam.completed.message');
+Route::get('exam/completed/message','Student\ExamSubmit@examCompletedMEssage')->name('exam.completed.message');
 
 Auth::routes(['register' => false]);
 Route::get('/home', 'ExamController@index')->name('home');

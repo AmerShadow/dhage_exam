@@ -499,10 +499,7 @@
 
 
 
-                              //  notAtteptedQuestionCount++;
-
-                              //  $("#not_attempted_question_count").text(notAtteptedQuestionCount);
-                                $("#attempted_question_count").text(attemptedQuestionsCount);
+                              $("#attempted_question_count").text(attemptedQuestionsCount);
 
                                 // updateExam();
 
