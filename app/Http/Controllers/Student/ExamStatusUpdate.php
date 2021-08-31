@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Student\ResultController;
 use Illuminate\Http\Request;
 use App\StudentExam;
 use App\StudentExamAnswer;
@@ -31,6 +32,7 @@ class ExamStatusUpdate extends Controller
                 $studentExam->time_remaining = 0;
                 $studentExam->is_completed = 1;
                 $studentExam->update();
+
                 return response()->json([
                     "status" => 'F',
                     "message" => 'Exam is comleted.',

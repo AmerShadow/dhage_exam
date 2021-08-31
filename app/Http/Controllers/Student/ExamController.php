@@ -44,24 +44,30 @@ class ExamController extends Controller
         $this->exam = $this->getExam($examId);
         $this->student = $this->getExaminee($request, $this->exam->id);
         $this->request = $request;
-        $this->getStudentExam();
 
-
-        //return $this->studentExam;
 
         if (!$this->student) {
             $message = "This test is not for your batch";
             return view('student.message', compact('message'));
         }
 
+
+        $this->getStudentExam();
+
+
+        //return $this->studentExam;
+
+
+
         if ($this->studentExam->time_remaining < 0 || $this->studentExam->is_completed) {
             $message = "Test is already submitted";
-            return view('student.message', compact('message'));
+            $result=ResultController::generateResult($this->studentExam);
+
+            return view('student.message', compact('message','result'));
         }
 
        $this->isExamStarted();
-        //return [$this->studentExam->time_remaining  , $this->studentExam->is_completed];
-        $checkExamDateValidation = $this->examDateValidation();
+       $checkExamDateValidation = $this->examDateValidation();
 
         if ($checkExamDateValidation !== 0) {
             return $checkExamDateValidation;
@@ -81,8 +87,6 @@ class ExamController extends Controller
             $questions = $this->startExam();
         }
         $isExamStarted = $this->isExamStarted();
-
-
 
         return [
             'student_exam' => $this->studentExam,
@@ -113,8 +117,7 @@ class ExamController extends Controller
 
     public function getStudentExam()
     {
-       // $isExamStarted = $this->isExamStarted();
-        if ($this->isExamStarted()) {
+       if ($this->isExamStarted()) {
             try {
                 $this->studentExam = StudentExam::where('student_id', $this->student->id)->first();
                 // if (!$this->studentExam) {
@@ -146,7 +149,7 @@ class ExamController extends Controller
 
 
         if ($end_date < $now) {
-            $message = "your exam is completed";
+            $message = "your exam  is completed";
             return view('student.message', compact('message'));
         }
         return 0;
@@ -220,7 +223,6 @@ class ExamController extends Controller
     public function resumeExam()
     {
         try {
-            //$this->studentExam = StudentExam::where('student_id', $this->student->id)->first();
 
             if (!$this->studentExam) {
                 throw new Exception('Exam not found', 1);
@@ -230,8 +232,6 @@ class ExamController extends Controller
         };
 
 
-        //return $this->studentExam;
-        // $questions=ExamQuestion::where('exams_id', $this->exam->id)->get();
 
         return $questions = ExamQuestion::leftJoin('student_exam_answers', 'exam_questions.id', '=', 'student_exam_answers.exam_questions_id')
             ->select(
@@ -249,9 +249,6 @@ class ExamController extends Controller
             ->where('student_exam_answers.student_exams_id', $this->studentExam->id)
             ->get();
         return $questions->where('student_exams_id', $this->studentExam->id);
-        // $questions = $questions->where('student_exams_id', $this->studentExam->id);
-
-        // return $questions;
     }
 
 

@@ -23,7 +23,17 @@
                         {{$message ?? "Oopss something went wrong .!"}}
                     </h5>
                     <h5 class="question">
+                        @if ($result)
+                        <h6 class="font-weight-bold">
+                            Status : {{$result['status'] }}
+                        </h6>
 
+                        <br>
+
+                        <h6 class="font-weight-bold">
+                            You got {{$result['marks'] }} marks out of {{$result['totalMarks']}} marks.
+                         </h6>
+                        @endif
                     </h5>
                     <!-- answer -->
                     <hr>

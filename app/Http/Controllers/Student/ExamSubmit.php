@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\student;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Student\ResultController;
 use Illuminate\Http\Request;
 use App\StudentExam;
 use App\StudentExamAnswer;
@@ -73,8 +74,10 @@ class ExamSubmit extends Controller
     }
 
 
-    public function examCompletedMEssage()
+    public function examCompletedMEssage($id)
     {
-        return view('student.exam_completed_message');
+        $studentExam=StudentExam::find($id);
+        $result=ResultController::generateResult($studentExam);
+        return view('student.exam_completed_message',compact('result'));
     }
 }

@@ -283,12 +283,12 @@
                                     success: function(result) {
                                         if (result['status'] == 'S') {
                                             alert(result['message']);
-                                            window.location.replace("{{ route('exam.completed.message') }}");
+                                            window.location.replace("{{ route('exam.completed.message',$questionPaper['student_exam']['id']) }}");
 
                                         } else {
                                             alert(result['message']);
                                             if (result['is_submitted'] == 1) {
-                                                window.location.replace("{{ route('exam.completed.message') }}");
+                                                window.location.replace("{{ route('exam.completed.message',$questionPaper['student_exam']['id']) }}");
                                             }
                                         }
 
@@ -318,9 +318,9 @@
                                             // backObject = result['backObject'];
 
                                         } else {
-                                            alert(result['message']);
+                                            //alert(result['message']);
                                             if (result['is_submitted'] == 1) {
-                                                window.location.replace("{{ route('exam.completed.message') }}");
+                                                window.location.replace("{{ route('exam.completed.message',$questionPaper['student_exam']['id']) }}");
                                             }
                                         }
 
